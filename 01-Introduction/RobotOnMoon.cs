@@ -9,10 +9,68 @@ using System.Text.RegularExpressions;
 
 public class RobotOnMoon
 {
-    public string isSafeCommand(string[] board, string S)
+public string isSafeCommand(string[] board, string S)
+{
+    bool isAlive = true;
+    int robotX = -1, robotY = -1;
+    
+    for (int i = 0; i < board.Length && !((robotX >= 0) && (robotY >= 0)); i++)
     {
-        return default(string);
+        for (int j = 0; j < board[i].Length; j++)
+        {
+            if (board[i][j] == 'S')
+            {
+                robotX = i;
+                robotY = j;
+                break;
+            }
+        }
     }
+	
+    foreach (char command in S)
+    {
+        switch (command)
+        {
+            case 'U':
+                if ((robotX > 0) && (board[robotX - 1][robotY] != '#'))
+                    robotX--;
+				else if (robotX <= 0)
+					isAlive = false;
+                break;
+            case 'D':
+                if ((robotX + 1 < board.Length) && (board[robotX + 1][robotY] != '#'))
+                    robotX++;
+				else if (robotX + 1 >= board.Length)
+					isAlive = false;
+                break;
+            case 'L':
+                if ((robotY > 0) && (board[robotX][robotY - 1] != '#'))
+                    robotY--;
+				else if (robotY <= 0)
+					isAlive = false;
+                break;
+            case 'R':
+                if ((robotY + 1 < board[robotX].Length) && (board[robotX][robotY + 1] != '#'))
+                    robotY++;
+				else if (robotY + 1 >= board[robotX].Length)
+					isAlive = false;
+                break;
+            default:
+                throw new ArgumentException("Invalid command.");
+        }
+        
+        if (!((robotX >= 0) && (robotX < board.Length) && (robotY >= 0) && (robotY < board[robotX].Length)))
+        {
+            isAlive = false;
+            break;
+        }
+    }
+
+    if (isAlive)
+        return "Alive";
+    else
+        return "Dead";
+	}
 
     #region Testing code
 
@@ -71,7 +129,7 @@ public class RobotOnMoon
         return res;
     }
 
-    public static void Run()
+    public static void Main(string[] args)
     {
         Boolean all_right;
         all_right = true;
